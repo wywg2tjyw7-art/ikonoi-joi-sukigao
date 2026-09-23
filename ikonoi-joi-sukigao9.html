@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>イコノイジョイ 好き顔♡9選</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:linear-gradient(135deg,#fff1f7,#f5f0ff);color:#6d4560;min-height:100vh}
+main{max-width:620px;margin:auto;padding:18px 14px 40px}
+.card{background:rgba(255,255,255,.94);border:2px solid #fff;border-radius:30px;padding:25px 18px;box-shadow:0 14px 35px rgba(170,100,145,.15);text-align:center}
+h1{color:#b84f85;font-size:31px;line-height:1.3;margin:8px 0 14px}
+h2{color:#a84f7e;font-size:20px;margin:8px 0}
+p{line-height:1.7}.sub{font-size:13px;color:#a47b96}
+button{border:0;border-radius:999px;padding:14px 22px;font-size:16px;font-weight:700;color:white;background:linear-gradient(90deg,#ff91bd,#b99bff);box-shadow:0 6px 15px rgba(180,105,150,.2);cursor:pointer}
+button:active{transform:scale(.98)}
+.hidden{display:none!important}
+.progress{height:8px;background:#f4dbe8;border-radius:99px;overflow:hidden;margin:18px 0}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff8fbc,#b69cff);transition:.2s}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.choice{padding:10px;background:#fff;border:2px solid #f2c9dc;border-radius:22px;color:#6d4560;box-shadow:none}
+.photo{width:100%;aspect-ratio:1/1;border-radius:16px;background:#fdebf4;display:flex;align-items:center;justify-content:center;color:#bd6893;font-weight:700;font-size:14px;padding:12px}
+.name{font-weight:800;font-size:15px;margin-top:8px}.group{font-size:11px;color:#ae7e99;margin-top:3px}
+.result{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
+.item{background:#fff1f7;border:1px solid #f3cbdc;border-radius:15px;padding:8px}
+.item .photo{border-radius:10px;font-size:11px}
+.rank{font-weight:900;color:#c34e88;font-size:13px;margin-bottom:4px}
+.item .name{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.small{font-size:11px;color:#ad879d}
+</style>
+</head>
+<body>
+<main>
+<section id="start" class="card">
+<div style="font-size:46px">🎀💗🎀</div>
+<h1>イコノイジョイ<br>好き顔♡9選</h1>
+<p class="sub">＝LOVE・≠ME・≒JOYの33人から<br>あなたの「好き顔」を9人選ぼう♡</p>
+<p>2人の顔を見比べて、<br><b>直感で好きなほうをタップ！</b></p>
+<button id="startBtn">好き顔選びをはじめる♡</button>
+<p class="small">2026年9月時点の現行メンバーを対象♡<br>※写真は後から公式画像に差し替え可能です。現在は名前カードで遊べます。</p>
+</section>
+
+<section id="game" class="card hidden">
+<div class="sub" id="round"></div>
+<div class="progress"><span id="bar"></span></div>
+<h2>どっちの顔が好き？♡</h2>
+<div class="choices" id="choices"></div>
+<p class="small">考えすぎず、第一印象で選んでね♡</p>
+</section>
+
+<section id="result" class="card hidden">
+<div style="font-size:42px">🎉💗🎉</div>
+<h1>あなたの<br>好き顔♡9選</h1>
+<p class="sub">あなたが選んだメンバーからTOP9を決定♡</p>
+<div class="result" id="resultList"></div>
+<div class="actions">
+<button id="again">もう一回遊ぶ♡</button>
+<button id="save">結果を保存♡</button>
+</div>
+<p class="small">スクショしてXなどでシェアしてね♡</p>
+<canvas id="canvas" width="900" height="1100" class="hidden"></canvas>
+</section>
+</main>
+
+<script>
+const members=[
+["＝LOVE","大谷映美里"],["＝LOVE","大場花菜"],["＝LOVE","音嶋莉沙"],["＝LOVE","齋藤樹愛羅"],["＝LOVE","佐々木舞香"],["＝LOVE","髙松瞳"],["＝LOVE","瀧脇笙古"],["＝LOVE","野口衣織"],["＝LOVE","諸橋沙夏"],["＝LOVE","山本杏奈"],
+["≠ME","尾木波菜"],["≠ME","落合希来里"],["≠ME","蟹沢萌子"],["≠ME","河口夏音"],["≠ME","川中子奈月心"],["≠ME","櫻井もも"],["≠ME","鈴木瞳美"],["≠ME","谷崎早耶"],["≠ME","冨田菜々風"],["≠ME","永田詩央里"],["≠ME","本田珠由記"],
+["≒JOY","逢田珠里依"],["≒JOY","天野香乃愛"],["≒JOY","市原愛弓"],["≒JOY","江角怜音"],["≒JOY","大信田美月"],["≒JOY","大西葵"],["≒JOY","小澤愛実"],["≒JOY","髙橋舞"],["≒JOY","藤沢莉子"],["≒JOY","村山結香"],["≒JOY","山田杏佳"],["≒JOY","山野愛月"]
+];
+
+let choices=100,round=0,wins=[],lastPair=null;
+
+const $=id=>document.getElementById(id);
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5)}
+function start(){
+ round=0;wins=[];lastPair=null;
+ $("start").classList.add("hidden");$("result").classList.add("hidden");$("game").classList.remove("hidden");
+ next();
+}
+function pickPair(){
+ let a=members[Math.floor(Math.random()*members.length)];
+ let b=members[Math.floor(Math.random()*members.length)];
+ while(b[1]===a[1] || (lastPair && [a[1],b[1]].sort().join("|")===lastPair)){
+  b=members[Math.floor(Math.random()*members.length)];
+ }
+ lastPair=[a[1],b[1]].sort().join("|");
+ return shuffle([a,b]);
+}
+function next(){
+ if(round>=choices){finish();return}
+ round++;
+ $("round").textContent=`第 ${round} / ${choices} 回`;
+ $("bar").style.width=(round/choices*100)+"%";
+ $("choices").innerHTML="";
+ pickPair().forEach(m=>{
+  const btn=document.createElement("button");
+  btn.className="choice";
+  btn.innerHTML=`<div class="photo">♡<br>${m[1]}</div><div class="name">${m[1]}</div><div class="group">${m[0]}</div>`;
+  btn.onclick=()=>{wins.push(m);next()};
+  $("choices").appendChild(btn);
+ });
+}
+function finish(){
+ $("game").classList.add("hidden");$("result").classList.remove("hidden");
+ const count={};
+ wins.forEach(m=>count[m[1]]=(count[m[1]]||0)+1);
+ const ranked=members.map(m=>({group:m[0],name:m[1],score:count[m[1]]||0}))
+  .sort((a,b)=>b.score-a.score || Math.random()-0.5).slice(0,9);
+ $("resultList").innerHTML="";
+ ranked.forEach((m,i)=>{
+  const el=document.createElement("div");el.className="item";
+  el.innerHTML=`<div class="rank">${i+1}位</div><div class="photo">♡<br>${m.name}</div><div class="name">${m.name}</div><div class="group">${m.group}</div>`;
+  $("resultList").appendChild(el);
+ });
+}
+$("startBtn").onclick=start;
+$("again").onclick=start;
+$("save").onclick=()=>{
+ const c=$("canvas"),ctx=c.getContext("2d");
+ ctx.fillStyle="#fff2f8";ctx.fillRect(0,0,c.width,c.height);
+ ctx.fillStyle="#b84f85";ctx.textAlign="center";
+ ctx.font="bold 48px sans-serif";ctx.fillText("イコノイジョイ",450,75);
+ ctx.font="bold 50px sans-serif";ctx.fillText("好き顔♡9選",450,140);
+ const items=[...$("resultList").children];
+ items.forEach((el,i)=>{
+   const x=55+(i%3)*265,y=190+Math.floor(i/3)*285;
+   ctx.fillStyle="#ffffff";ctx.fillRect(x,y,235,250);
+   ctx.fillStyle="#c34e88";ctx.font="bold 28px sans-serif";ctx.fillText(`${i+1}位`,x+117,y+38);
+   ctx.fillStyle="#fdebf4";ctx.fillRect(x+20,y+55,195,135);
+   ctx.fillStyle="#b84f85";ctx.font="bold 22px sans-serif";
+   const name=el.querySelector(".name").textContent;
+   ctx.fillText(name,x+117,y+225);
+ });
+ const a=document.createElement("a");a.download="ikonoi-joi-sukigao9.png";a.href=c.toDataURL("image/png");a.click();
+};
+</script>
+</body>
+</html>
